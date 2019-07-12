@@ -33,10 +33,6 @@ class SearchForm extends Component {
     this.props.onSearchTermChange(this.state.inputText);
   };
 
-  componentDidMount() {
-    console.log("mount");
-  }
-
   render() {
     return (
       <form id="search-movies" onSubmit={this.handleSubmit}>

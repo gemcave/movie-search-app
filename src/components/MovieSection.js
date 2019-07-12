@@ -32,9 +32,15 @@ const MovieSection = props => {
       isDetails={props.isDetails}
       isDetailsActive={props.isDetailsActive}
     >
-      <MovieHeader isLogoSize={props.isLogoSize} isBack={props.isBack} />
+      <MovieHeader
+        isLogoSize={props.isLogoSize}
+        isBack={props.isBack}
+        toggleDetailsSection={props.toggleDetailsSection}
+      />
       <MovieMain
         movieResult={props.movieResult}
+        movieData={props.movieData}
+        isDetails={props.isDetails}
         onSearchTermChange={props.onSearchTermChange}
         toggleDetailsSection={props.toggleDetailsSection}
       />

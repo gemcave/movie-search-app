@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import rem from "../helpers/rem";
-import { transform } from "@babel/core";
 
 const StyledLogo = styled.div`
   display: flex;

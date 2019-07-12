@@ -29,7 +29,9 @@ const Button = props => {
   if (apperance === "search") {
     return <StyledSearchButton>{children}</StyledSearchButton>;
   } else if (apperance === "back") {
-    return <StyledBackButton>{children}</StyledBackButton>;
+    return (
+      <StyledBackButton onClick={props.onClick}>{children}</StyledBackButton>
+    );
   }
 
   return <StyledButton apperance={apperance}>{children}</StyledButton>;

@@ -5,11 +5,26 @@ import axios from "axios";
 
 const API_KEY = "075e6ddf1e5e2d1a672e23418dd10f2a";
 
+const displayRole = (crew, department) => {
+  const roleData = crew
+    .filter(obj => {
+      return obj.department === department;
+    })
+    .slice(0, 3);
+
+  return [
+    ...roleData.map(role => {
+      return role.name;
+    })
+  ];
+};
+
 const GlobalStyle = createGlobalStyle`
 	body {
 		--color-blue-dark: #0e0e41;
 		--color-grey: #444;
 		--color-black: black;
+		--color-blue-dark: #0e0e41;
 		--color-black-a87: rgba(var(--color-black), 0.87);
 		--color-black-a60: rgba(var(--color-black), 0.6);
 		--color-yellow: #ffbe28;
@@ -31,7 +46,6 @@ const GlobalStyle = createGlobalStyle`
 		overflow-x: hidden;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
-		webkit-overflow-scrolling: touch;
 		position: relative;
 		width: 100%;
 	}
@@ -40,17 +54,45 @@ const GlobalStyle = createGlobalStyle`
 class Movie extends PureComponent {
   state = {
     movies: [],
+    movieSelected: { directors: [], writers: [], stars: [] },
     isDetailsActive: false
   };
 
-  toggleDetailsSection = () => {
+  toggleDetailsSection = movieId => {
     this.setState(state => ({
       isDetailsActive: !state.isDetailsActive
     }));
+
+    if (typeof movieId !== undefined) {
+      const contentQuery = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&language=en-US`;
+      const creditQuery = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}`;
+      axios.all([axios.get(contentQuery), axios.get(creditQuery)]).then(
+        axios.spread((contentData, creditData) => {
+          const details = contentData.data;
+          const releaseDate = details.release_date.split("-")[0];
+          const directors = displayRole(creditData.data.crew, "Directing");
+          const writers = displayRole(creditData.data.crew, "Writing");
+          const stars = creditData.data.cast.slice(0, 3);
+
+          this.setState(state => ({
+            movieSelected: {
+              title: details.title,
+              posterPath: details.poster_path,
+              overview: details.overview,
+              tagline: details.tagline,
+              voteAverage: details.voteAverage,
+              releaseDate,
+              directors,
+              writers,
+              stars
+            }
+          }));
+        })
+      );
+    }
   };
 
   searchTerm = term => {
-    console.log("this is search term, " + term);
     const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${term}&page=1&include_adult=false`;
 
     axios
@@ -75,6 +117,7 @@ class Movie extends PureComponent {
         />
         <MovieSection
           movieResult={this.state.movies}
+          movieData={this.state.movieSelected}
           isDetailsActive={this.state.isDetailsActive}
           isDetails={true}
           isLogoSize="small"

@@ -53,7 +53,7 @@ const StyledItemDetails = styled.div`
 class MovieResultItem extends PureComponent {
   handleClick = event => {
     event.preventDefault();
-    this.props.toggleDetailsSection();
+    this.props.toggleDetailsSection(this.props.movie.id);
   };
   render() {
     const { movie } = this.props;
